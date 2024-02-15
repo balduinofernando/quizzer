@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('question_id')->constrained('questions')->cascadeOnDelete();
             $table->foreignId('option_id')->constrained()->cascadeOnDelete();
-            $table->integer("elapsed_time")->default(0);
+            $table->integer('elapsed_time')->default(0);
             $table->timestamps();
         });
     }
