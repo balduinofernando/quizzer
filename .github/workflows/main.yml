@@ -28,7 +28,7 @@ jobs:
     - name: Install Node packages using Bun.sh
       run: bun install
     - name: Build frontend
-      run: bun run development
+      run: bun run dev
     - name: Install PHP versions
       uses: shivammathur/setup-php@v2
       with:
