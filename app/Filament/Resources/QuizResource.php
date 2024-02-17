@@ -6,6 +6,7 @@ use App\Filament\Resources\QuizResource\Pages;
 use App\Filament\Resources\QuizResource\RelationManagers;
 use App\Models\Quiz;
 use Filament\Forms;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -37,21 +38,21 @@ class QuizResource extends Resource
                     ->default(45)
                     ->label('Duração')
                     ->placeholder('Duração'),
-                Select::make('status')
-                    ->required()
-                    ->default('active')
-                    ->label('Status')
-                    ->placeholder('-- Selecione o Estado --')
-                    ->options([
-                        'active' => 'Ativo',
-                        'inactive' => 'Inativo',
-                    ]),
-                TextInput::make('max_score')
+                    TextInput::make('max_score')
                     ->integer()
                     ->required()
                     ->maxValue(20)
                     ->label('Pontuação Máxima')
                     ->placeholder('Pontuação Máxima'),
+                Radio::make('status')
+                    ->required()
+                    ->default('active')
+                    ->label('Estado')
+                    ->options([
+                        'active' => 'Ativo',
+                        'inactive' => 'Inativo',
+                    ]),
+
             ]);
     }
 

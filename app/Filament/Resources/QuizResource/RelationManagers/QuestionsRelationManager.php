@@ -3,13 +3,19 @@
 namespace App\Filament\Resources\QuizResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\Actions\Action;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Resources\RelationManagers\RelationManager;
 
 class QuestionsRelationManager extends RelationManager
 {
@@ -25,19 +31,46 @@ class QuestionsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('quiz_id')
-                    ->default($this->getOwnerRecord()->id)
-                    ->required()
-                    ->disabled()
-                    ->maxLength(255),
                 TextInput::make('title')
+                    ->required()
                     ->label('Pergunta'),
                 TextInput::make('description')
                     ->label('Descrição'),
                 TextInput::make('explanation')
                     ->label('Explicação'),
                 TextInput::make('score')
+                    ->integer()
                     ->label('Pontuação'),
+
+                Repeater::make('options')
+                    ->addable()
+                    ->addActionLabel('Adicionar Opção')
+                    ->relationship('options')
+                    ->label('Opções')
+                    ->cloneable(true)
+                    ->minItems(1)
+                    ->grid(2)
+                    ->columnSpanFull()
+                    ->deleteAction(
+                        fn (Action $action) => $action->requiresConfirmation()
+                            ->modalHeading('Excluir Opção')
+                            ->modalDescription('Você tem certeza disso?')
+                            ->modalCancelActionLabel('Cancelar')
+                            ->modalSubmitActionLabel('Excluir')
+                    )
+                    ->schema([
+                        TextInput::make('description')
+                        ->label('Opção'),
+                        Checkbox::make('is_correct')
+                            ->distinct()
+                        //Radio::make('is_correct')
+                            // ->default(false)
+                            // ->options([
+                            //     true => 'Não',
+                            //     false => 'Sim',
+                            // ])
+                            ->label('Resposta Correta?'),
+                    ])
             ]);
     }
 
@@ -65,9 +98,11 @@ class QuestionsRelationManager extends RelationManager
                     ->label('Adicionar Pergunta'),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()
+                Tables\Actions\ViewAction::make()
+                    //->view('filament.resources.questions.view')
+                    ->label('Ver Pergunta'),
+                Tables\Actions\EditAction::make()->label('Editar Pergunta'),
+                Tables\Actions\DeleteAction::make()->label('Excluir Pergunta')
                     ->requiresConfirmation(),
             ])
             ->bulkActions([
