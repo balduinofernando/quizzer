@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('quiz_id')->constrained()->onDelete('cascade');
             $table->string('title');
-            $table->text('description');
-            $table->text('explanation');
+            $table->text('description')->nullable();
+            $table->text('explanation')->nullable();
             $table->bigInteger('score')->default(1);
             $table->timestamps();
         });
